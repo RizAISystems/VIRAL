@@ -102,8 +102,8 @@ class ViralEngine:
             verification=verification,
         )
 
-    def run_flagship(self) -> list[StepResult]:
-        scenario = FlagshipRaceScenario()
+    def run_flagship(self, engineering_revision: bool = False) -> list[StepResult]:
+        scenario = FlagshipRaceScenario(engineering_revision=engineering_revision)
         results: list[StepResult] = []
         for t in range(scenario.duration_s + 1):
             frame = scenario.frame(t)

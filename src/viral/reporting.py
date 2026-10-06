@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 
 from .engine import StepResult
-from .models import to_dict
+from .models import EngineeringReview, to_dict
 
 
 def key_events(results: list[StepResult]) -> list[StepResult]:
@@ -45,7 +45,7 @@ def render_text(result: StepResult) -> str:
         f"CONFIDENCE   {r.confidence:.2f}",
         f"MARGIN       current={result.derived.engineering_margin:.2f} projected={result.forecast.projected_margin:.2f}",
         f"RELATIONSHIP control_effort={result.derived.control_effort_residual_pct:+.2f}% "
-        f"boost_error={result.derived.boost_tracking_error_bar:.3f}bar",
+        f"tracking_error={result.derived.boost_tracking_error_bar:.3f}bar",
         f"FORECAST     {r.what_happens_next}",
         f"RESPONSE     {r.engineering_response}",
         f"AUTHORITY    requested={result.authority.requested_level.value} granted={result.authority.granted_level.value}",
@@ -63,6 +63,59 @@ def render_text(result: StepResult) -> str:
     if result.verification:
         lines.append(f"VERIFICATION {result.verification.status}: {result.verification.conclusion}")
     lines.append(f"TOP BELIEF   {top.key}={top.probability:.2f}")
+    return "\n".join(lines)
+
+
+def render_engineering_review(review: EngineeringReview) -> str:
+    lines = [
+        "ENGINEERING LIFECYCLE REVIEW",
+        "",
+        "CONDITION-BASED MAINTENANCE",
+        f"SYSTEM       {review.maintenance.system}",
+        f"CONFIDENCE   {review.maintenance.confidence:.2f}",
+        f"RECOMMEND    {review.maintenance.recommendation}",
+    ]
+    for basis in review.maintenance.basis:
+        lines.append(f"BASIS        {basis}")
+
+    lines.extend(["", "RANKED ENGINEERING RESPONSES"])
+    for option in review.options:
+        lines.append(
+            f"{option.rank}. {option.name} | score={option.score:.3f} | "
+            f"modeled_margin_gain=+{option.predicted_margin_gain_pct:.1f}%"
+        )
+        lines.append(f"   OBJECTIVE  {option.objective}")
+        for tradeoff in option.tradeoffs:
+            lines.append(f"   TRADEOFF   {tradeoff}")
+
+    if review.design_requirement:
+        lines.extend([
+            "",
+            "DESIGN REQUIREMENT",
+            f"TITLE        {review.design_requirement.title}",
+            f"TRIGGER      {review.design_requirement.trigger}",
+        ])
+        for target in review.design_requirement.targets:
+            lines.append(f"TARGET       {target}")
+        lines.append(f"RATIONALE    {review.design_requirement.rationale}")
+
+    v = review.validation
+    lines.extend([
+        "",
+        "MODIFICATION VALIDATION",
+        f"STATUS       {v.status}",
+        (
+            f"CONTROL      baseline={v.baseline_peak_control_effort_pct:.2f}% "
+            f"revised={v.revised_peak_control_effort_pct:.2f}%"
+        ),
+        (
+            f"TRACKING     baseline={v.baseline_peak_tracking_error_bar:.3f}bar "
+            f"revised={v.revised_peak_tracking_error_bar:.3f}bar"
+        ),
+        f"MARGIN       baseline_min={v.baseline_min_margin:.2f} revised_min={v.revised_min_margin:.2f}",
+        f"BOTTLENECK   moved={v.moved_bottleneck}",
+        f"CONCLUSION   {v.conclusion}",
+    ])
     return "\n".join(lines)
 
 

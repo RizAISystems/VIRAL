@@ -10,13 +10,19 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from viral import AuthorityLevel, ViralEngine  # noqa: E402
-from viral.reporting import key_events, render_json, render_text  # noqa: E402
+from viral import AuthorityLevel, EngineeringReviewPlanner, ViralEngine  # noqa: E402
+from viral.models import to_dict  # noqa: E402
+from viral.reporting import (  # noqa: E402
+    key_events,
+    render_engineering_review,
+    render_json,
+    render_text,
+)
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the V.I.R.A.L. Motorsport public vehicle-intelligence reference demonstration."
+        description="Run the V.I.R.A.L. Motorsport public engineering-intelligence demonstrator."
     )
     parser.add_argument(
         "--authority",
@@ -27,7 +33,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--json",
         action="store_true",
-        help="Print key events as JSON instead of the human-readable engineering trace.",
+        help="Print the decision trace and engineering lifecycle review as JSON.",
     )
     parser.add_argument(
         "--all",
@@ -50,30 +56,48 @@ def main() -> int:
         "A2": AuthorityLevel.A2_REQUEST,
         "A3": AuthorityLevel.A3_SIMULATE,
     }
+
     ledger_path = ROOT / args.ledger
     engine = ViralEngine(authority_level=level_map[args.authority], ledger_path=ledger_path)
     results = engine.run_flagship()
+
+    # A second run applies a synthetic engineering revision under the same duty
+    # cycle. A1 prevents a preservation action from masking whether the
+    # engineering change itself improved the underlying relationship.
+    validation_engine = ViralEngine(authority_level=AuthorityLevel.A1_ADVISE)
+    revised_results = validation_engine.run_flagship(engineering_revision=True)
+
+    review = EngineeringReviewPlanner().build_review(results, revised_results)
+    engine.ledger.append("engineering_review", to_dict(review))
+
     selected = results if args.all else key_events(results)
 
     if args.json:
         events = [json.loads(render_json(result)) for result in selected]
         payload = {
             "system": "V.I.R.A.L.™ Motorsport — Vehicle Intelligence Reference Architecture Lab™",
-            "scope": "synthetic public reference demonstration",
+            "scope": "synthetic public engineering-intelligence demonstrator",
             "ledger_valid": engine.ledger.validate(),
             "ledger_path": str(ledger_path.relative_to(ROOT)),
             "events": events,
+            "engineering_review": to_dict(review),
         }
         print(json.dumps(payload, indent=2))
         return 0
 
     print("V.I.R.A.L.™ Motorsport — Vehicle Intelligence Reference Architecture Lab™")
-    print("Synthetic public reference demonstration. No production vehicle control logic is included.\n")
+    print(
+        "Synthetic public engineering-intelligence demonstrator. "
+        "No production vehicle control logic is included.\n"
+    )
 
     for result in selected:
         print(render_text(result))
         print("-" * 96)
 
+    print()
+    print(render_engineering_review(review))
+    print("-" * 96)
     print(f"Ledger valid: {engine.ledger.validate()}")
     print(f"Ledger path: {ledger_path.relative_to(ROOT)}")
     return 0

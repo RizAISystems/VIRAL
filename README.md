@@ -1,23 +1,123 @@
 # V.I.R.A.L.™ Motorsport
 ## Vehicle Intelligence Reference Architecture Lab™
 
-**A working public reference system for continuous vehicle-engineering awareness, probabilistic diagnosis and bounded preservation decisions.**
+> **What if the vehicle did not merely generate telemetry, but continuously developed an engineering understanding of its own performance, degradation, limitations and opportunities for improvement?**
 
-V.I.R.A.L.™ explores one question:
+**V.I.R.A.L.™ Motorsport is a working public demonstrator for continuous vehicle engineering intelligence.**
 
-> **What changes when vehicle data is treated as a continuously changing engineering relationship rather than a collection of individual channels?**
+It explores an architecture that moves beyond monitoring and fault detection into a broader engineering loop:
 
-The public demonstrator does not wait for a driver complaint or a hard threshold. It evaluates whether the vehicle still responds to demand in the way its current operating context predicts it should.
+```text
+OBSERVE → UNDERSTAND → PREDICT → PRESERVE → MAINTAIN → IMPROVE → DESIGN → VALIDATE → LEARN
+```
 
-## Motorsport problem
+The public implementation is synthetic by design, but the architecture is intended to show how an intelligent system can reason across the lifecycle of a high-performance vehicle rather than wait for a fault code, driver complaint or hard threshold.
 
-A driver can report what the car feels like after a condition becomes perceptible. Engineers can then correlate telemetry, diagnose the cause and decide how to protect performance or reliability. V.I.R.A.L. Motorsport explores a complementary layer: **continuous machine-speed engineering awareness before the symptom has to reach the driver.**
+---
 
-The system looks for changes in relationships, not just threshold crossings. It can surface that the vehicle is requiring more control effort to achieve the same requested state, that corrections are accumulating, that recovery behavior is changing or that several individually acceptable channels no longer make sense together.
+## The engineering idea
 
-The goal is not to replace race engineers. It is to increase engineering awareness bandwidth and shorten the path from **developing condition → evidence → diagnosis → preservation decision**.
+High-performance vehicles already generate extraordinary amounts of data. The limiting factor is not always sensing. It is **continuous engineering attention**.
 
-That means looking across a chain such as:
+A human engineering team can correlate telemetry, compare runs, identify degradation, evaluate modifications and decide what to change. But no person can continuously observe every signal, interaction, historical comparison and operating condition at machine speed.
+
+V.I.R.A.L. explores the layer between raw data and engineering action:
+
+```text
+vehicle data
+    ↓
+operating context
+    ↓
+expected relationship
+    ↓
+non-conformance / degradation evidence
+    ↓
+competing engineering hypotheses
+    ↓
+prediction
+    ↓
+preservation / maintenance / improvement decision
+    ↓
+engineering change
+    ↓
+validation under comparable conditions
+```
+
+The objective is not to replace race engineers.
+
+**The objective is to increase engineering awareness bandwidth.**
+
+---
+
+## What the demonstrator actually proves
+
+The included synthetic race sequence demonstrates a complete engineering chain:
+
+1. **Pre-failure awareness** — rising actuator effort is detected before requested-versus-achieved performance materially diverges.
+2. **Probabilistic diagnosis** — competing explanations are maintained, conflicting evidence can weaken a diagnosis and the preferred hypothesis changes when new evidence arrives.
+3. **Prediction and preservation** — narrowing operating margin is projected and a bounded simulated preservation state can be requested before a hard-limit event.
+4. **Condition-based maintenance** — repeated relationship drift becomes a maintenance recommendation based on observed condition rather than mileage or a single threshold.
+5. **Engineering recommendation** — the same evidence is used to rank multiple engineering responses by modeled benefit and tradeoff.
+6. **Design requirement generation** — when no synthetic catalog candidate satisfies the required thermal, pressure-drop, mass and packaging constraints, V.I.R.A.L. generates a measurable design brief for a purpose-designed solution.
+7. **Modification validation** — a second synthetic run applies an engineering revision under the same duty cycle and measures whether the original limitation improved or simply moved elsewhere.
+
+> **The vehicle should not only tell engineers what happened. It should help build an evidence-backed understanding of what is happening, what is likely to happen next, what should be changed and whether the change actually worked.**
+
+---
+
+## One example from the live demonstrator
+
+The public scenario begins with a conformant vehicle. An early thermal-shaped signal appears, so the reasoner initially favors a thermal-management explanation.
+
+Then a more important relationship changes: **the vehicle requires increasing control effort to maintain the requested state while achieved performance still appears acceptable.**
+
+New evidence arrives. The earlier explanation weakens. The system revises its diagnosis toward an air-charge / performance-control limitation.
+
+Later:
+
+```text
+CONTROL EFFORT      +16.41%
+TRACKING ERROR       0.230 bar
+ENGINEERING MARGIN   0.39
+PROJECTED MARGIN     0.00
+```
+
+The system requests a bounded preservation state and verifies that the synthetic vehicle begins recovering.
+
+But V.I.R.A.L. does not stop there.
+
+```text
+CONDITION-BASED MAINTENANCE
+Inspect the air-charge control path, sealing/flow path and thermal-support hardware
+before the next comparable sustained high-load session.
+
+RANKED ENGINEERING RESPONSES
+1. Flow-path efficiency redesign
+2. Charge-air heat-rejection upgrade
+3. Calibration-only preservation envelope
+
+DESIGN REQUIREMENT
+No synthetic catalog candidate simultaneously satisfies the required control-effort,
+tracking, thermal, pressure-drop, mass and packaging constraints.
+
+Generate a purpose-designed flow/thermal support element.
+
+MODIFICATION VALIDATION
+Control effort: 15.73% → 8.18%
+Tracking error: 0.141 bar → 0.093 bar
+Minimum margin: 0.58 → 0.76
+Replacement bottleneck detected: False
+```
+
+Every value above is synthetic. The important point is the **engineering contract** being demonstrated.
+
+---
+
+## Why this is different from a telemetry dashboard
+
+V.I.R.A.L. is not intended to be another data logger, threshold alarm, OBD fault reader, static dashboard or single anomaly model.
+
+The architecture reasons over relationships such as:
 
 ```text
 DRIVER / SYSTEM REQUEST
@@ -29,77 +129,34 @@ ACHIEVED VEHICLE STATE
 CORRECTIONS / COMPENSATIONS
         ↓
 THERMAL + MECHANICAL RESPONSE
+        ↓
+OPERATING OUTCOME
 ```
 
-A particularly useful precursor appears when **the achieved result still looks acceptable, but the effort required to maintain it begins to change**.
+That allows the system to detect a useful class of precursor:
 
-The reasoning system repeatedly asks six questions:
+> **The output still looks acceptable, but the effort required to produce it is changing.**
+
+Individual channels can remain inside conventional limits while the relationship between them becomes non-conformant.
+
+---
+
+## The reasoning contract
+
+Every reasoning cycle asks:
 
 1. **What is happening?**
 2. **Why might it be happening?**
 3. **Which explanation best fits all available evidence?**
 4. **What will probably happen next?**
 5. **How certain am I?**
-6. **What engineering response could preserve the vehicle?**
+6. **What engineering response could preserve or improve the vehicle?**
 
-A separate deterministic authority layer then decides what the reasoner is actually permitted to do.
+A separate deterministic authority layer then asks whether an action is permitted, inside the approved envelope, reversible and justified if the reasoner is wrong.
 
----
+**Probabilistic inference decides what the system currently believes.**
 
-## What this is designed to demonstrate
-
-High-performance engineering already has sophisticated telemetry, specialist models and experienced engineers. V.I.R.A.L. does not attempt to teach or replace those systems.
-
-It demonstrates an architecture for **automating engineering awareness**:
-
-- compare requested state with achieved state
-- observe whether actuator effort is changing
-- evaluate correction and compensation channels
-- correlate thermal and operating context
-- maintain competing engineering explanations
-- revise those explanations when new evidence arrives
-- forecast narrowing operating margin
-- recommend a bounded preservation response before failure is required to occur
-
-The intended value is not "AI reads sensors." It is **machine-speed awareness applied to engineering knowledge**.
-
----
-
-## Flagship demonstration
-
-The included synthetic race sequence starts with a fully conformant vehicle.
-
-No driver complaint occurs. No hard limit is crossed.
-
-An early thermal-shaped precursor appears and the reasoner temporarily favors a thermal-management explanation. Then the relationship between requested air-charge state, actuator effort and achieved state begins to change. The achieved output initially remains acceptable even while the synthetic control effort required to maintain it rises. As new evidence arrives, the reasoner revises its preferred explanation.
-
-Later, requested-versus-achieved response begins to diverge, correction activity increases and the projected engineering margin narrows. The authority layer permits only a **simulated bounded preservation state**, after which the verifier checks whether the synthetic vehicle returns toward its expected relationship.
-
-```text
-NORMAL OPERATION
-      ↓
-SUBTLE NON-CONFORMANCE
-      ↓
-CONTROL EFFORT CHANGES BEFORE OUTPUT FAILS
-      ↓
-MULTI-SIGNAL EVIDENCE ASSEMBLED
-      ↓
-COMPETING ENGINEERING HYPOTHESES
-      ↓
-NEW EVIDENCE ARRIVES
-      ↓
-HYPOTHESIS REVISED IF WARRANTED
-      ↓
-LIKELY CONSEQUENCE FORECAST
-      ↓
-BOUNDED AUTHORITY CHECK
-      ↓
-SIMULATED PRESERVATION ACTION
-      ↓
-OUTCOME VERIFIED
-```
-
-The public system is intentionally allowed to be uncertain. If evidence does not converge, it abstains rather than manufacture a confident diagnosis.
+**Deterministic authority decides what the system is allowed to do.**
 
 ---
 
@@ -112,43 +169,57 @@ flowchart LR
     O[Achieved State] --> N
     C[Corrections] --> N
     X[Operating Context] --> N
-    N --> E[Expected Relationship]
-    E --> S[State Interpreter]
-    S --> V[Evidence Assembler]
-    V --> Q[Adaptive Reasoning Engine]
-    S --> F[Margin Forecaster]
+    N --> E[Expected Relationships]
+    E --> S[State Interpretation]
+    S --> V[Evidence]
+    V --> Q[Competing Hypotheses]
+    S --> F[Margin / Consequence Forecast]
     F --> Q
     Q --> G[Authority Gate]
-    G -->|Allowed| P[Simulated Preservation]
-    G -->|Not allowed| H[Engineering Escalation]
+    G --> P[Bounded Preservation]
     P --> Z[Outcome Verification]
-    Q --> L[Hash-Chained Evidence Ledger]
+    Q --> M[Condition-Based Maintenance]
+    Q --> U[Engineering Options]
+    U --> D[Design Requirement if Needed]
+    D --> T[Synthetic Engineering Revision]
+    T --> Z2[Comparable-Condition Validation]
+    Q --> L[Evidence Ledger]
     G --> L
     Z --> L
+    Z2 --> L
 ```
 
-The architectural separation is deliberate:
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the module-level design.
 
-**Probabilistic inference decides what the system currently believes.**
+---
 
-**Deterministic authority decides what the system is allowed to do.**
+## One architecture, different deployment depth
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) and [docs/signal_model.md](docs/signal_model.md).
+The public reference architecture is deliberately vendor-neutral. The same contracts can be adapted to very different environments while the underlying models, data fidelity and authority change:
+
+| Environment | Possible role |
+|---|---|
+| Elite motorsport / endurance / prototype programs | Continuous performance, degradation, reliability and engineering-decision support |
+| OEM development vehicles | Correlation, validation, prognostics and development-loop acceleration |
+| Specialist performance engineering | Modification diagnosis, upgrade evaluation and repeatable validation |
+| Club racing / advanced track use | Condition awareness, preservation and maintenance guidance |
+| Advanced enthusiast applications | Lower-authority engineering assistance using a smaller data envelope |
+
+The architecture is portable. The engineering depth is deployment-specific.
 
 ---
 
 ## Three-minute technical review
 
-If you are evaluating the architecture rather than reading documentation end to end:
-
-1. Run `python demo.py` and watch the hypothesis revision and bounded preservation sequence.
-2. Inspect `src/viral/scenario.py` for the synthetic request → effort → achieved-state sequence.
+1. Run `python demo.py`.
+2. Watch the reasoner change its mind before the hard-limit event.
 3. Inspect `src/viral/evidence.py` for supporting and conflicting evidence.
-4. Inspect `src/viral/reasoning.py` for stateful belief revision and uncertainty handling.
-5. Inspect `src/viral/authority.py` for the deterministic boundary around probabilistic inference.
-6. Inspect `tests/test_flagship.py` for the behavior the system is required to prove.
+4. Inspect `src/viral/reasoning.py` for stateful probabilistic belief revision.
+5. Inspect `src/viral/engineering.py` for maintenance, engineering-option ranking, design-requirement generation and modification validation.
+6. Inspect `src/viral/authority.py` for the deterministic boundary around probabilistic inference.
+7. Inspect `tests/` for the behavior the public system is required to prove.
 
-The repository is intentionally small enough to audit quickly.
+The repository is intentionally compact enough to audit quickly.
 
 ---
 
@@ -158,64 +229,23 @@ Requires Python 3.11+ and no third-party runtime dependencies.
 
 ```bash
 python demo.py
-```
-
-Run advisory-only authority:
-
-```bash
 python demo.py --authority A1
-```
-
-Print every frame:
-
-```bash
 python demo.py --all
-```
-
-Emit key events as JSON:
-
-```bash
 python demo.py --json
-```
-
-Run the tests:
-
-```bash
 python -m unittest discover -s tests -v
 ```
 
----
-
-## What the demo proves
-
-A successful run demonstrates that the public architecture can:
-
-- ingest a continuous synthetic vehicle stream
-- normalize request, actuator, achieved-state, correction and context signals
-- model an expected operating relationship
-- detect increased control effort before achieved performance visibly diverges
-- detect non-conformance without waiting for a hard threshold
-- assemble supporting and conflicting evidence
-- maintain multiple competing engineering hypotheses
-- revise the preferred hypothesis as evidence changes
-- forecast narrowing operating margin
-- abstain when confidence is insufficient
-- enforce A0–A3 authority boundaries
-- simulate a bounded preservation response
-- verify the post-action outcome
-- preserve the decision trail in a tamper-evident hash chain
-
-The tests explicitly verify that rising synthetic control effort is detected **before requested-versus-achieved air-charge divergence**, before a simulated driver report and before a synthetic hard-limit crossing.
+The public test suite verifies pre-threshold detection, hypothesis revision, bounded authority, preservation verification, condition-based maintenance generation, ranked engineering responses, synthetic design-requirement generation and measurable post-modification validation.
 
 ---
 
 ## Public scope
 
-The signal taxonomy is informed by the structure of real performance-vehicle logging, but **every value, coefficient, threshold, weighting, scenario transition and action in this repository is synthetic and intentionally simplified**.
+The signal taxonomy is informed by the structure of real performance-vehicle logging, but **every value, coefficient, threshold, weighting, component candidate, scenario transition and action in this repository is synthetic and intentionally simplified**.
 
-No private calibration file, production telemetry, manufacturer mapping or vehicle-specific engineering history is included.
+No production telemetry, manufacturer mapping, real calibration file, ECU-write implementation, private component-selection logic, proprietary engineering history or production diagnostic model is included.
 
-V.I.R.A.L. demonstrates the architecture, evidence flow, hypothesis revision, uncertainty handling, authority model and closed-loop verification pattern. It does **not** publish production vehicle-performance algorithms, ECU control logic, calibration strategy or proprietary engineering intelligence.
+The repository demonstrates the **architecture and engineering contracts**, not a production vehicle-intelligence product.
 
 See [PUBLIC_SCOPE.md](PUBLIC_SCOPE.md).
 
@@ -223,15 +253,13 @@ See [PUBLIC_SCOPE.md](PUBLIC_SCOPE.md).
 
 ## Safety boundary
 
-This repository is a software architecture demonstration. It is **not intended for direct vehicle control** and contains no production ECU-write implementation.
-
-The A3 level in this repository means **simulated action only**.
+This repository is a software architecture demonstrator. A3 means **simulated action only**. No production vehicle-control implementation is included.
 
 ---
 
 ## Intellectual property
 
-**V.I.R.A.L.™** and **Vehicle Intelligence Reference Architecture Lab™** are proprietary project names and marks of **RZ1 Performance Engineering**.
+**V.I.R.A.L.™ Motorsport** and **Vehicle Intelligence Reference Architecture Lab™** are project names and marks of **RZ1 Performance Engineering**.
 
 © 2026 RZ1 Performance Engineering. All rights reserved.
 

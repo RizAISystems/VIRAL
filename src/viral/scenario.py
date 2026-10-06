@@ -23,8 +23,9 @@ class FlagshipRaceScenario:
 
     duration_s = 125
 
-    def __init__(self) -> None:
+    def __init__(self, engineering_revision: bool = False) -> None:
         self.state = ScenarioState()
+        self.engineering_revision = engineering_revision
 
     def apply_action(self, action: SimulatedAction) -> None:
         if action.approved and action.name == "bounded_preservation_state":
@@ -107,6 +108,17 @@ class FlagshipRaceScenario:
             coolant_offset += 0.9
             intake_offset += 9.0
             ignition_correction -= 1.8
+
+        # A second synthetic run can apply an engineering revision to the same
+        # duty cycle. This is not a production design model. It demonstrates the
+        # validation contract: change the vehicle, repeat comparable conditions,
+        # then measure whether the original limitation improved or moved.
+        if self.engineering_revision and t >= 42:
+            revision_ramp = min(max((t - 42) / 12.0, 0.0), 1.0)
+            wastegate_offset *= 1.0 - 0.48 * revision_ramp
+            boost_extra_error *= 1.0 - 0.38 * revision_ramp
+            intake_offset *= 1.0 - 0.28 * revision_ramp
+            ignition_correction *= 1.0 - 0.25 * revision_ramp
 
         # Public bounded preservation reduces synthetic requested demand only.
         # No production control law or calibration instruction exists here.

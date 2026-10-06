@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "viral-motorsport"
-version = "0.3.0"
-description = "V.I.R.A.L. Motorsport public vehicle-intelligence reference architecture demonstrator"
+version = "0.4.0"
+description = "V.I.R.A.L. Motorsport public continuous vehicle engineering-intelligence demonstrator"
 requires-python = ">=3.11"
 authors = [{name = "RZ1 Performance Engineering"}]
 readme = "README.md"
 license = {text = "All rights reserved. See IP_NOTICE.md."}
-keywords = ["vehicle intelligence", "motorsport", "AI", "engineering", "decision support", "bounded autonomy"]
+keywords = ["vehicle intelligence", "motorsport", "AI", "engineering", "prognostics", "decision support", "bounded autonomy", "design validation"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

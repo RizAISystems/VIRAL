@@ -2,9 +2,15 @@
 
 ## Objective
 
-V.I.R.A.L. is a public reference architecture for continuous vehicle-engineering reasoning.
+V.I.R.A.L. is a public reference architecture for **continuous vehicle engineering intelligence**.
 
-Its job is not to reproduce a production race-engineering stack. Its job is to demonstrate a system capable of moving from **live operating relationships to evidence-backed engineering judgment** while preserving uncertainty, authority boundaries and outcome verification.
+Its purpose is not to recreate a production race-engineering stack. It demonstrates how a system can move from live operating relationships to evidence-backed engineering judgment across the vehicle lifecycle:
+
+```text
+OBSERVE → UNDERSTAND → PREDICT → PRESERVE → MAINTAIN → IMPROVE → DESIGN → VALIDATE → LEARN
+```
+
+The public implementation is intentionally synthetic and inspectable. It proves the architecture and the engineering contracts without publishing production vehicle models, calibration logic or proprietary engineering intelligence.
 
 ## Core reasoning contract
 
@@ -15,13 +21,13 @@ Every reasoning cycle answers:
 3. Which explanation best fits all available evidence?
 4. What will probably happen next?
 5. How certain am I?
-6. What engineering response could preserve the vehicle?
+6. What engineering response could preserve or improve the vehicle?
 
 Those answers are produced before the authority layer is consulted.
 
-## Canonical signal relationship
+## Canonical vehicle relationship
 
-The public data model is deliberately organized around engineering roles rather than vendor-specific channel names:
+The public data model is organized around engineering roles rather than vendor-specific channel names:
 
 ```text
 REQUEST / INTENT
@@ -37,54 +43,35 @@ THERMAL + MECHANICAL RESPONSE
 OPERATING OUTCOME
 ```
 
-The architecture can therefore represent a condition in which achieved state still looks acceptable while the effort required to maintain it is increasing. That is a useful precursor because performance loss does not need to be visible before non-conformance can be detected.
+This lets the architecture represent a condition in which achieved state still looks acceptable while the effort required to maintain it is increasing. Performance loss does not need to be visible before non-conformance can be detected.
 
-## Module flow
+## Runtime reasoning path
 
 ### `SyntheticExpectedStateModel`
-Produces an intentionally simplified contextual expectation for selected request, actuator, achieved-state, fuel-support and thermal channels.
 
-The public model is deliberately transparent. It is not vehicle-specific calibration and is not presented as a production model.
+Produces an intentionally simplified contextual expectation for request, actuator, achieved-state, fuel-support and thermal channels. It is not a vehicle-specific calibration model.
 
 ### `StateInterpreter`
-Computes relationship residuals and rates of change, including:
 
-- requested-versus-achieved air-charge error
-- actuator/control-effort residual
-- mixture tracking error
-- fuel-pressure tracking error
-- thermal residuals
-- correction activity
-- hard-limit status
-- synthetic composite engineering margin
+Computes relationship residuals and rates of change, including requested-versus-achieved air-charge error, actuator-effort residual, mixture tracking error, fuel-pressure tracking error, thermal residuals, correction activity and composite engineering margin.
 
-The key distinction is that **non-conformance can exist while every individual channel is still inside a conventional limit**.
+The important distinction is that **non-conformance can exist while every individual channel remains inside a conventional limit**.
 
 ### `EvidenceAssembler`
-Converts interpreted state into explicit evidence records.
 
-Evidence can support or conflict with an engineering hypothesis. Conformant channels are not ignored; they can actively weaken an explanation. This is important because the system must be able to abandon an attractive but poorly supported diagnosis.
+Turns interpreted state into explicit supporting and conflicting evidence. Conformant channels can actively weaken a hypothesis rather than being ignored.
 
 ### `AdaptiveReasoningEngine`
-Maintains belief across competing engineering explanations:
 
-- developing thermal-management limitation
-- air-charge / performance-control deviation
-- fuel-delivery support deviation
-- sensor or signal-integrity issue
-- contextual transient
-
-The public implementation uses transparent probabilistic evidence fusion and stateful belief smoothing. It is intentionally inspectable and reproducible.
-
-Its purpose is to demonstrate **competing hypotheses + supporting evidence + conflicting evidence + revision**, not to disclose proprietary diagnostic intelligence.
+Maintains competing engineering explanations and revises belief as new evidence arrives. The public implementation uses transparent probabilistic evidence fusion and stateful smoothing so the reasoning path is auditable.
 
 ### `MarginForecaster`
-Projects synthetic engineering margin forward using the recent trend.
 
-The forecaster can request preservation before a hard threshold is crossed when the current relationship indicates that available margin is narrowing rapidly.
+Projects synthetic engineering margin forward from recent behavior and can identify a preservation need before a hard-limit event occurs.
 
 ### `AuthorityGate`
-Deterministic control boundary around the probabilistic reasoner.
+
+Separates probabilistic inference from deterministic permission.
 
 | Level | Public meaning |
 |---|---|
@@ -93,30 +80,77 @@ Deterministic control boundary around the probabilistic reasoner.
 | A2 | Request action |
 | A3 | Simulate approved preservation action |
 
-A3 in this repository never controls a real vehicle.
+A3 never controls a real vehicle.
 
 ### `PreservationController`
-Applies only a synthetic demand reduction to the simulator.
 
-It contains no production commands, ECU-write implementation, ignition strategy, boost control table or manufacturer-specific control mechanism.
+Applies only a synthetic demand reduction. It contains no production ECU command, calibration table or manufacturer-specific control method.
 
 ### `OutcomeVerifier`
-Measures the post-action state and decides whether synthetic engineering margin is recovering, worsening or inconclusive.
 
-This closes the loop. The system does not assume an action worked merely because it was issued.
+Measures the post-action state and determines whether the vehicle is recovering, worsening or inconclusive. An issued action is never assumed to have worked.
 
-### `HashChainedLedger`
-Records the decision path in an append-only SHA-256 hash chain.
+## Engineering lifecycle layer
 
-Each record contains its predecessor hash. Tests verify that payload tampering invalidates the chain.
+### `EngineeringReviewPlanner`
+
+Extends the live reasoning result into post-event engineering work.
+
+It converts the same evidence into four additional outputs:
+
+1. **Condition-based maintenance** — sustained relationship drift becomes an inspection recommendation based on observed condition rather than mileage or a fault code.
+2. **Ranked engineering responses** — multiple improvement paths are scored against the observed limitation and their modeled tradeoffs are kept visible.
+3. **Design requirement generation** — when no synthetic catalog candidate satisfies the required constraints, the architecture produces a measurable engineering brief instead of force-fitting an available part.
+4. **Modification validation** — a second synthetic run repeats comparable conditions after an engineering revision and measures whether the original limitation improved or moved elsewhere.
+
+### Synthetic engineering-option ranking
+
+The public option scores are deliberately simple. They are derived from the relative severity of control-effort, tracking and thermal evidence.
+
+The purpose is to demonstrate the decision contract:
+
+```text
+observed limitation
+    ↓
+engineering objective
+    ↓
+candidate responses
+    ↓
+benefit + tradeoff comparison
+    ↓
+ranked recommendation
+```
+
+Production solution-ranking logic is deliberately absent.
+
+### Design requirement generation
+
+The public demonstration includes a small synthetic candidate set. If no candidate meets all stated thermal, pressure-drop, mass and packaging constraints, the planner generates a requirement for a purpose-designed solution.
+
+This demonstrates a critical boundary between **selecting an existing part** and **defining the engineering problem that a new part must solve**.
+
+### Comparable-condition validation
+
+The flagship demo reruns the same synthetic duty cycle with an engineering revision. Validation compares:
+
+- peak actuator-effort deviation
+- peak requested-versus-achieved tracking error
+- minimum engineering margin
+- whether another subsystem becomes the stronger bottleneck
+
+A modification is not treated as successful merely because a component changed. The result must be measured against the original limitation.
+
+## Evidence ledger
+
+`HashChainedLedger` records reasoning, authority, action, verification and engineering-review output in an append-only SHA-256 chain.
+
+Tests verify that payload tampering invalidates the chain.
 
 ## Why probabilistic reasoning is separated from authority
 
-The reasoner may be wrong.
+The reasoner may be wrong. That is a design assumption, not an exception.
 
-That is a design assumption, not an exception.
-
-Therefore model output does not become engineering truth merely because a model produced it. The system keeps:
+Therefore model output does not become engineering truth merely because a model produced it. The architecture keeps:
 
 - inference probabilistic
 - evidence explicit
@@ -126,8 +160,13 @@ Therefore model output does not become engineering truth merely because a model 
 - authority deterministic
 - actions bounded
 - outcomes verified
+- engineering changes re-tested
 
-This separation is the core engineering-control pattern demonstrated by the repository.
+## Portability
+
+The architecture is deliberately vendor-neutral. The same contracts can support elite motorsport, OEM development, specialist performance engineering, club racing or lower-authority enthusiast applications.
+
+What changes between deployments is the data fidelity, domain models, engineering history, authority and integration depth, not the fundamental reasoning loop.
 
 ## Public implementation boundary
 
@@ -142,5 +181,7 @@ The following are intentionally absent:
 - private engineering history
 - persistent vehicle-specific learning
 - proprietary failure signatures
+- real component-selection databases
+- private design optimization models
 
-The public architecture is designed so that stronger domain models can replace the synthetic components without changing the overall evidence, reasoning, authority and verification contracts.
+The public architecture is designed so stronger domain models can replace the synthetic components without changing the evidence, reasoning, authority, engineering-review and validation contracts.

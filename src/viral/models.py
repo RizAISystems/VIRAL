@@ -159,6 +159,53 @@ class VerificationResult:
     conclusion: str
 
 
+@dataclass(frozen=True)
+class MaintenanceAssessment:
+    system: str
+    recommendation: str
+    confidence: float
+    basis: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class EngineeringOption:
+    rank: int
+    name: str
+    objective: str
+    score: float
+    predicted_margin_gain_pct: float
+    tradeoffs: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class DesignRequirement:
+    title: str
+    trigger: str
+    targets: tuple[str, ...]
+    rationale: str
+
+
+@dataclass(frozen=True)
+class ValidationAssessment:
+    status: str
+    baseline_peak_control_effort_pct: float
+    revised_peak_control_effort_pct: float
+    baseline_peak_tracking_error_bar: float
+    revised_peak_tracking_error_bar: float
+    baseline_min_margin: float
+    revised_min_margin: float
+    moved_bottleneck: bool
+    conclusion: str
+
+
+@dataclass(frozen=True)
+class EngineeringReview:
+    maintenance: MaintenanceAssessment
+    options: tuple[EngineeringOption, ...]
+    design_requirement: DesignRequirement | None
+    validation: ValidationAssessment
+
+
 @dataclass
 class EngineState:
     previous_frame: TelemetryFrame | None = None
