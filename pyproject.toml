@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "viral-motorsport"
+version = "0.3.0"
+description = "V.I.R.A.L. Motorsport public vehicle-intelligence reference architecture demonstrator"
+requires-python = ">=3.11"
+authors = [{name = "RZ1 Performance Engineering"}]
+readme = "README.md"
+license = {text = "All rights reserved. See IP_NOTICE.md."}
+keywords = ["vehicle intelligence", "motorsport", "AI", "engineering", "decision support", "bounded autonomy"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
