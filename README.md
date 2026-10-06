@@ -58,7 +58,7 @@ The included synthetic race sequence demonstrates a complete engineering chain:
 3. **Prediction and preservation** — narrowing operating margin is projected and a bounded simulated preservation state can be requested before a hard-limit event.
 4. **Condition-based maintenance** — repeated relationship drift becomes a maintenance recommendation based on observed condition rather than mileage or a single threshold.
 5. **Engineering recommendation** — the same evidence is used to rank multiple engineering responses by modeled benefit and tradeoff.
-6. **Design requirement generation** — when no synthetic catalog candidate satisfies the required thermal, pressure-drop, mass and packaging constraints, V.I.R.A.L. generates a measurable design brief for a purpose-designed solution.
+6. **Design requirement generation** — when no synthetic catalog candidate satisfies the required control-effort, tracking, thermal, pressure-drop, mass and packaging constraints, V.I.R.A.L. generates a measurable design brief for a purpose-designed solution.
 7. **Modification validation** — a second synthetic run applies an engineering revision under the same duty cycle and measures whether the original limitation improved or simply moved elsewhere.
 
 > **The vehicle should not only tell engineers what happened. It should help build an evidence-backed understanding of what is happening, what is likely to happen next, what should be changed and whether the change actually worked.**

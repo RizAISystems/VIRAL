@@ -125,7 +125,7 @@ Production solution-ranking logic is deliberately absent.
 
 ### Design requirement generation
 
-The public demonstration includes a small synthetic candidate set. If no candidate meets all stated thermal, pressure-drop, mass and packaging constraints, the planner generates a requirement for a purpose-designed solution.
+The public demonstration includes a small synthetic candidate set. If no candidate meets all stated control-effort, tracking, thermal, pressure-drop, mass and packaging constraints, the planner generates a requirement for a purpose-designed solution.
 
 This demonstrates a critical boundary between **selecting an existing part** and **defining the engineering problem that a new part must solve**.
 

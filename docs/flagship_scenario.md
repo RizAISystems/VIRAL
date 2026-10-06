@@ -54,7 +54,7 @@ Each option includes an engineering objective and explicit tradeoffs.
 
 ## Phase 10 — design requirement
 
-The system checks a small synthetic candidate set against thermal, pressure-drop, mass and packaging constraints.
+The system checks a small synthetic candidate set against control-effort, tracking, thermal, pressure-drop, mass and packaging constraints.
 
 No candidate meets every constraint, so V.I.R.A.L. generates a measurable design requirement for a purpose-designed solution rather than force-fitting an available part.
 
