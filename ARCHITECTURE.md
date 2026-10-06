@@ -1,5 +1,7 @@
 # V.I.R.A.L.™ Motorsport Architecture
 
+> **What if the vehicle did not merely generate telemetry, but continuously developed an engineering understanding of its own performance, degradation, limitations and opportunities for improvement?**
+
 ## Objective
 
 V.I.R.A.L. is a public reference architecture for **continuous vehicle engineering intelligence**.

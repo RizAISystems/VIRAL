@@ -3,6 +3,8 @@
 
 > **What if the vehicle did not merely generate telemetry, but continuously developed an engineering understanding of its own performance, degradation, limitations and opportunities for improvement?**
 
+That is the central question behind **V.I.R.A.L.™ Motorsport**.
+
 **V.I.R.A.L.™ Motorsport is a working public demonstrator for continuous vehicle engineering intelligence.**
 
 It explores an architecture that moves beyond monitoring and fault detection into a broader engineering loop:
@@ -114,6 +116,8 @@ Every value above is synthetic. The important point is the **engineering contrac
 ---
 
 ## Why this is different from a telemetry dashboard
+
+The defining idea is simple: **the vehicle should not merely report data. It should continuously develop engineering understanding of its own condition and opportunities for improvement.**
 
 V.I.R.A.L. is not intended to be another data logger, threshold alarm, OBD fault reader, static dashboard or single anomaly model.
 
