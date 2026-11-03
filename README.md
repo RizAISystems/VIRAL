@@ -1,6 +1,10 @@
 # V.I.R.A.L.™ Motorsport
 ## Vehicle Intelligence Reference Architecture Lab™
 
+**[Live synthetic demonstrator](https://riz-ai.rz07860.chatgpt.site/viral-demo/)** · **[Technical overview](https://riz-ai.rz07860.chatgpt.site/technology-opportunities/viral-motorsport/)** · **[Engineering portfolio](https://riz-ai.rz07860.chatgpt.site/)**
+
+**Recorded evidence:** 18/18 focused synthetic reference tests passed at the documented milestone. This does not establish real-vehicle testing or OEM deployment.
+
 > **What if the vehicle did not merely generate telemetry, but continuously developed an engineering understanding of its own performance, degradation, limitations and opportunities for improvement?**
 
 That is the central question behind **V.I.R.A.L.™ Motorsport**.
