@@ -7,13 +7,14 @@ from typing import Any
 
 
 class HashChainedLedger:
-    """Small append-only evidence ledger used by the public demonstrator."""
+    """Run-local SHA-256-linked evidence ledger for the public demonstrator."""
 
     def __init__(self, path: str | Path | None = None) -> None:
         self.path = Path(path) if path else None
         self.entries: list[dict[str, Any]] = []
         if self.path:
             self.path.parent.mkdir(parents=True, exist_ok=True)
+            # Start a fresh local run; prior log history is not loaded or verified.
             self.path.write_text("", encoding="utf-8")
 
     def append(self, event_type: str, payload: dict[str, Any]) -> dict[str, Any]:
