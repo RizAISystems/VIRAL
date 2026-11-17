@@ -259,10 +259,6 @@ See [PUBLIC_SCOPE.md](PUBLIC_SCOPE.md).
 
 ---
 
-## Evidence ledger limits
-
-The Python JSONL log is cleared when a new ledger instance starts. SHA-256 links are checked only against entries held in memory during the current run; persisted history is not reloaded or verified. There is no external head anchor, so tail truncation cannot be detected.
-
 ## Safety boundary
 
 This repository is a software architecture demonstrator. A3 means **simulated action only**. No production vehicle-control implementation is included.
